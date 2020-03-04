@@ -3,7 +3,6 @@ import { scaleLinear, scaleSequential } from "d3-scale";
 import { extent, mean, max } from "d3-array";
 import StrikeZone from "./StrikeZone";
 import { hexbin } from "d3-hexbin";
-import { interpolateBuPu } from "d3-scale-chromatic";
 
 function StrikeZoneHexbin({ data }) {
   const w = 500,

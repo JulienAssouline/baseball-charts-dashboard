@@ -88,7 +88,7 @@ function ZoneSprayChart({ data }) {
     .range([height, 0]);
 
   const paths = zoneCoords.map((d, i, array) => {
-    if (array[i + 1] != undefined)
+    if (array[i + 1] !== undefined) {
       return (
         <g key={i}>
           <path
@@ -125,6 +125,9 @@ function ZoneSprayChart({ data }) {
           </text>
         </g>
       );
+    } else {
+      return null;
+    }
   });
 
   return (

@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { csv } from "d3-fetch";
 import csvData from "./static/savant_data (3).csv";
 import "./App.css";
-import Scatter from "./components/Satter";
-import SprayChart from "./components/SprayChart";
-import StrikeZoneScatter from "./components/StrikeZoneScatter";
-import StrikeZoneHexbin from "./components/StrikeZoneHexbin";
-import ZoneSprayChart from "./components/ZoneSprayChart";
+import Dashboard from "./components/Dashboard";
+import FirstSlide from "./components/FirstSlide";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 function App() {
   const [data, setData] = useState();
@@ -32,15 +30,19 @@ function App() {
 
   return (
     <div className="App">
-      <div className="charts-container">
-        <Scatter data={MikeTrout} />
-        <SprayChart data={MikeTrout} />
-        <ZoneSprayChart data={MikeTrout} />
-      </div>
-      <div className="charts-container">
-        <StrikeZoneScatter data={MikeTrout} />
-        <StrikeZoneHexbin data={MikeTrout} />
-      </div>
+      <Router>
+        <div>
+          <Route
+            path="/"
+            exact
+            component={() => <Dashboard data={MikeTrout} />}
+          />
+          <Route
+            path="/slide1"
+            component={() => <FirstSlide data={MikeTrout} />}
+          />
+        </div>
+      </Router>
     </div>
   );
 }
