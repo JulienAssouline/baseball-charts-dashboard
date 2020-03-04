@@ -28,16 +28,18 @@ function App() {
 
   if (!data) return <div>...loading</div>;
 
+  const MikeTrout = data.filter(d => d.player_name === "Mike Trout");
+
   return (
     <div className="App">
       <div className="charts-container">
-        <Scatter data={data} />
-        <SprayChart data={data} />
-        <ZoneSprayChart data={data} />
+        <Scatter data={MikeTrout} />
+        <SprayChart data={MikeTrout} />
+        <ZoneSprayChart data={MikeTrout} />
       </div>
       <div className="charts-container">
-        <StrikeZoneScatter data={data} />
-        <StrikeZoneHexbin data={data} />
+        <StrikeZoneScatter data={MikeTrout} />
+        <StrikeZoneHexbin data={MikeTrout} />
       </div>
     </div>
   );

@@ -19,8 +19,6 @@ function SprayChart({ data }) {
 
   const events = [...new Set(dataFiltered.map(d => d.events))];
 
-  console.log(events);
-
   const xScale = scaleLinear()
     .domain([-150, 150])
     .range([0, width]);
@@ -42,8 +40,6 @@ function SprayChart({ data }) {
       style={{ fill: color(d.events) }}
     />
   ));
-
-  console.log(dataFiltered);
 
   return (
     <div className="hit-location-chart-container">

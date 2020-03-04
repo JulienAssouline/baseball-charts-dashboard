@@ -1,7 +1,7 @@
 import React from "react";
-import { scaleLinear } from "d3-scale";
+import { scaleLinear, scaleSequential } from "d3-scale";
+import { extent } from "d3-array";
 import stadiumSVG from "../static/generic-stadium.svg";
-import Triangle from "./Triangle";
 
 function ZoneSprayChart({ data }) {
   const w = 500,
@@ -42,22 +42,42 @@ function ZoneSprayChart({ data }) {
     return theta;
   }
 
-  const zoneCoords = {
-    x0Point: xRadian(zoneRadius, 180 / 39.5),
-    y0Point: yRadian(zoneRadius, 180 / 39.5),
-    x1Point: xRadian(zoneRadius, 180 / 60.5),
-    y1Point: yRadian(zoneRadius, 180 / 60.5),
-    x2Point: xRadian(zoneRadius, 180 / 80.5),
-    y2Point: yRadian(zoneRadius, 180 / 80.5),
-    x3Point: xRadian(zoneRadius, 180 / 100.5),
-    y3Point: yRadian(zoneRadius, 180 / 100.5),
-    x4Point: xRadian(zoneRadius, 180 / 120.5),
-    y4Point: yRadian(zoneRadius, 180 / 120.5),
-    x5Point: xRadian(zoneRadius, 180 / 140.5),
-    y5Point: yRadian(zoneRadius, 180 / 140.5)
-  };
+  const zoneCoords = [];
+  let initialDegree = 39.5;
+
+  for (let i = 0; i < 6; i++) {
+    const x = xRadian(zoneRadius, 180 / initialDegree),
+      y = yRadian(zoneRadius, 180 / initialDegree);
+    zoneCoords.push({
+      x: x,
+      y: y,
+      angle: Angle(0, -4, x, y),
+      zone: i,
+      values: []
+    });
+
+    initialDegree += 20.2;
+  }
 
   const dataFiltered = data.filter(d => d.hc_x > 0);
+
+  dataFiltered.forEach(d => {
+    d.angle = Angle(0, -4, d.hc_x - 125.42, 198.27 - d.hc_y);
+  });
+
+  zoneCoords.forEach((d, i, array) => {
+    dataFiltered.forEach(j => {
+      if (array[i + 1]) {
+        if (j.angle < array[i + 1].angle && j.angle > array[i].angle) {
+          d.values.push(j);
+        }
+      }
+    });
+  });
+
+  const color = scaleSequential()
+    .domain(extent(zoneCoords, d => d.values.length))
+    .range(["white", "#003da5"]);
 
   const xScale = scaleLinear()
     .domain([-150, 150])
@@ -67,17 +87,45 @@ function ZoneSprayChart({ data }) {
     .domain([-50, 200])
     .range([height, 0]);
 
-  const circles = dataFiltered.map((d, i) => (
-    <circle
-      key={i}
-      r={5}
-      cx={xScale(d.hc_x - 125.42)}
-      cy={yScale(198.27 - d.hc_y)}
-      style={{ fill: "#003da5" }}
-    />
-  ));
-
-  console.log(zoneCoords);
+  const paths = zoneCoords.map((d, i, array) => {
+    if (array[i + 1] != undefined)
+      return (
+        <g key={i}>
+          <path
+            d={`M${xScale(0)}, ${yScale(-4)} L ${xScale(array[i].x)}, ${yScale(
+              array[i].y
+            )} L ${xScale(array[i + 1].x)}, ${yScale(
+              array[i + 1].y
+            )} L ${xScale(0)}, ${yScale(-4)}z`}
+            style={{
+              fill: color(d.values.length),
+              opacity: 0.9,
+              stroke: "black"
+            }}
+          />
+          <path
+            id={`invisible_path_${i}`}
+            className={"invisible-path"}
+            d={`M${xScale(array[i + 1].x)},${yScale(array[i + 1].y)} ${xScale(
+              array[i].x
+            )}, ${yScale(array[i].y)}`}
+            style={{
+              fill: "none",
+              stroke: "none"
+            }}
+          />
+          <text className="stats-labels" dy={-10}>
+            <textPath
+              xlinkHref={`#invisible_path_${i}`}
+              startOffset={"50%"}
+              style={{ textAnchor: "middle" }}
+            >
+              {Math.round(d.values.length)}
+            </textPath>
+          </text>
+        </g>
+      );
+  });
 
   return (
     <div className="zone-location-chart-container">
@@ -85,35 +133,7 @@ function ZoneSprayChart({ data }) {
       <svg width={w} height={h}>
         <g transform={`translate(${margin.left},${margin.top})`}>
           <image href={stadiumSVG} width={width} height={height}></image>
-          {circles}
-          <path
-            d={`M${xScale(0)}, ${yScale(-4)} L ${xScale(
-              zoneCoords.x0Point
-            )}, ${yScale(zoneCoords.y0Point)} L ${xScale(
-              zoneCoords.x1Point
-            )}, ${yScale(zoneCoords.y1Point)} L ${xScale(0)}, ${yScale(-4)}z
-            M${xScale(0)}, ${yScale(-4)} L ${xScale(
-              zoneCoords.x1Point
-            )}, ${yScale(zoneCoords.y1Point)} L ${xScale(
-              zoneCoords.x2Point
-            )}, ${yScale(zoneCoords.y2Point)} L ${xScale(0)}, ${yScale(-4)}z
-            M${xScale(0)}, ${yScale(-4)} L ${xScale(
-              zoneCoords.x2Point
-            )}, ${yScale(zoneCoords.y2Point)} L ${xScale(
-              zoneCoords.x3Point
-            )}, ${yScale(zoneCoords.y3Point)} L ${xScale(0)}, ${yScale(-4)}z
-            M${xScale(0)}, ${yScale(-4)} L ${xScale(
-              zoneCoords.x3Point
-            )}, ${yScale(zoneCoords.y3Point)} L ${xScale(
-              zoneCoords.x4Point
-            )}, ${yScale(zoneCoords.y4Point)} L ${xScale(0)}, ${yScale(-4)}z
-              M${xScale(0)}, ${yScale(-4)} L ${xScale(
-              zoneCoords.x4Point
-            )}, ${yScale(zoneCoords.y4Point)} L ${xScale(
-              zoneCoords.x5Point
-            )}, ${yScale(zoneCoords.y5Point)} L ${xScale(0)}, ${yScale(-4)}z`}
-            style={{ fill: "#003da5", opacity: 0.7, stroke: "black" }}
-          />
+          {paths}
         </g>
       </svg>
     </div>
