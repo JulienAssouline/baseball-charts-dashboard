@@ -9,12 +9,13 @@ function Dashboard({ data }) {
   return (
     <div>
       <div className="charts-container">
+        <StrikeZoneScatter data={data} />
+
         <Scatter data={data} />
         <SprayChart data={data} />
         <ZoneSprayChart data={data} />
       </div>
       <div className="charts-container">
-        <StrikeZoneScatter data={data} />
         <StrikeZoneHexbin data={data} />
       </div>
     </div>

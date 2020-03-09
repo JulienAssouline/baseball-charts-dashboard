@@ -3,6 +3,7 @@ import { scaleLinear } from "d3-scale";
 import { extent } from "d3-array";
 import AxisLeft from "./AxisLeft";
 import AxisBottom from "./AxisBottom";
+import Points from "./Points";
 
 function Scatter({ data }) {
   const w = 500,
@@ -24,19 +25,6 @@ function Scatter({ data }) {
     .domain(extent(data, d => d.launch_speed))
     .range([height, 0]);
 
-  const circles = data.map((d, i) => (
-    <circle
-      key={i}
-      r={5}
-      cx={xScale(d.release_speed)}
-      cy={yScale(d.launch_speed)}
-      style={{
-        fill: "#003da5",
-        display: !d.launch_speed ? "none" : !d.release_speed ? "none" : "block"
-      }}
-    />
-  ));
-
   return (
     <div className="pitch-and-exit-velocity-chart-container">
       <h2>Pitch and Exit Velocity</h2>
@@ -44,7 +32,13 @@ function Scatter({ data }) {
         <g transform={`translate(${margin.left},${margin.top})`}>
           <AxisLeft yScale={yScale} width={width} />
           <AxisBottom xScale={xScale} height={height} />
-          {circles}
+          <Points
+            data={data}
+            cx="release_speed"
+            cy="launch_speed"
+            xScale={xScale}
+            yScale={yScale}
+          />
         </g>
       </svg>
     </div>

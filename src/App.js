@@ -4,6 +4,7 @@ import csvData from "./static/savant_data (3).csv";
 import "./App.css";
 import Dashboard from "./components/Dashboard";
 import FirstSlide from "./components/FirstSlide";
+import CodeSnippet from "./components/CodeSnippet";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
             path="/slide1"
             component={() => <FirstSlide data={MikeTrout} />}
           />
+          <Route path="/test" component={() => <CodeSnippet />} />
         </div>
       </Router>
     </div>

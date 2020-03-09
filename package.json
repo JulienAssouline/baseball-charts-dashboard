@@ -14,8 +14,13 @@
     "d3-scale-chromatic": "^1.5.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-intersection-observer": "^8.26.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0"
+    "react-scripts": "3.4.0",
+    "react-scroll": "^1.7.16",
+    "react-scrollama": "^1.0.2",
+    "react-spring": "^8.0.27",
+    "react-syntax-highlighter": "^12.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -37,5 +42,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "babel-plugin-prismjs": "^2.0.1"
   }
 }

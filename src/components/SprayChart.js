@@ -2,6 +2,7 @@ import React from "react";
 import { scaleLinear, scaleOrdinal } from "d3-scale";
 import stadiumSVG from "../static/generic-stadium.svg";
 import { schemeCategory10 } from "d3-scale-chromatic";
+import Points from "./Points";
 
 function SprayChart({ data }) {
   const w = 500,
@@ -31,15 +32,10 @@ function SprayChart({ data }) {
     .domain(events)
     .range(schemeCategory10);
 
-  const circles = dataFiltered.map((d, i) => (
-    <circle
-      key={i}
-      r={5}
-      cx={xScale(d.hc_x - 125.42)}
-      cy={yScale(198.27 - d.hc_y)}
-      style={{ fill: color(d.events) }}
-    />
-  ));
+  dataFiltered.forEach(d => {
+    d.x_location = d.hc_x - 125.42;
+    d.y_location = 198.27 - d.hc_y;
+  });
 
   return (
     <div className="hit-location-chart-container">
@@ -47,7 +43,13 @@ function SprayChart({ data }) {
       <svg width={w} height={h}>
         <g transform={`translate(${margin.left},${margin.top})`}>
           <image href={stadiumSVG} width={width} height={height}></image>
-          {circles}
+          <Points
+            data={dataFiltered}
+            cx="x_location"
+            cy="y_location"
+            xScale={xScale}
+            yScale={yScale}
+          />
         </g>
       </svg>
     </div>

@@ -5,3 +5,27 @@
 .charts-container {
   display: flex;
 }
+
+.code-text-container {
+  margin-bottom: 100px;
+  width: 50%;
+  height: 100%;
+}
+
+.code-snippet-container {
+  background-color: #334150;
+  color: white;
+}
+
+.line-container {
+  position: relative;
+  display: flex;
+  padding: 0 2em;
+  align-items: baseline;
+  cursor: text;
+  min-height: 1.8;
+}
+
+.code-line-number {
+  padding: 1em;
+}
